@@ -1,42 +1,41 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { gsap } from "gsap";
 
-export const useCounter = () => {
+export const useCounter = ({ maxCount = 10 }) => {
+  const [counter, setCounter] = useState(6);
+  const elementToAnimate = useRef<any>(null); //HTMLHeadingElement
 
-    const [counter, setCounter] = useState(6);
-    const counterElement = useRef<HTMLHeadingElement>(null);
+  const timeline = useRef(gsap.timeline());
 
-    const MAXIMUM_COUNT = 10;
+  const handleClick = () => {
+    // counter < MAXIMUM_COUNT && setCounter((prev: number) => prev + 1)
+    setCounter((prev) => Math.min(prev + 1, maxCount));
+  };
 
-    const handleClick = () => {
-        // counter < MAXIMUM_COUNT && setCounter((prev: number) => prev + 1)
-        setCounter((prev) => Math.min(prev + 1, MAXIMUM_COUNT));
-    };
+  useLayoutEffect(() => {
+    console.log(elementToAnimate.current);
+    timeline.current
+      .to(elementToAnimate.current, {
+        y: -10,
+        duration: 0.2,
+        ease: "ease.out",
+      })
+      .to(elementToAnimate.current, {
+        y: 0,
+        duration: 1,
+        ease: "bounce.out",
+      })
+      .pause();
+  }, []);
 
-    useEffect(() => {
-        if (counter > 9) {
-            console.log("%c Se llego al valor 10 ", "color:yellow;background:blue;");
+  useEffect(() => {
+    // if (counter < maxCount) return;
+    timeline.current.play(0);
+  }, [counter]);
 
-            const timeLine = gsap.timeline();
-
-            timeLine
-                .to(counterElement.current, {
-                    y: -10,
-                    duration: 0.2,
-                    ease: "ease.out",
-                })
-                .to(counterElement.current, {
-                    y: 0,
-                    duration: 1,
-                    ease: "bounce.out",
-                });
-        }
-    }, [counter]);
-
-    return {
-        counter,
-        counterElement,
-        handleClick
-
-    }
-}
+  return {
+    counter,
+    elementToAnimate,
+    handleClick,
+  };
+};
