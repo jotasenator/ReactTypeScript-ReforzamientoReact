@@ -1,22 +1,21 @@
-import { useState } from "react"
+import { useState } from "react";
 
 interface Props {
   initialValue: number;
 }
 
-export const Counter= ({initialValue  }:Props) => {
-  
-  const [counter, setCounter] = useState(initialValue)
+export const Counter = ({ initialValue }: Props) => {
+  const [counter, setCounter] = useState(initialValue);
 
   const handleClick = () => {
-    setCounter((prev: number) => prev + 1)
-  }
+    setCounter((prev: number) => prev + 1);
+  };
 
   return (
-      <>
-          <h1>Counter : {counter} </h1>
+    <>
+      <h1>Counter : {counter} </h1>
 
-          <button onClick={handleClick}> +1 </button>
-      </>
-  )
-}
+      <button onClick={handleClick}> +1 </button>
+    </>
+  );
+};
